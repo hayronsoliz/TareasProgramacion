@@ -1,0 +1,158 @@
+---
+title: "Funciones y Apply"
+output: html_notebook
+---
+
+Funciones en R
+
+Estructura de una función
+
+El cuerpo (body)
+Los argumentos (formals)
+El ambiente (environment)
+
+
+```{r}
+
+nombre_de_funcion <- function(parametro1, parametro2, ...){
+  cuerpo <- ...
+  cuerpo <- ...
+  
+  resultado <- 
+    
+  return (resultado)
+}
+
+
+```
+
+Ejemplo de una función
+
+
+```{r}
+
+mi_funcion <- function(num1, num2){
+  resultado <- num1 + num2
+  
+  return(resultado)
+}
+
+mi_funcion(num1=3, num2=5)
+
+```
+Argumentos de una función
+
+Los argumentos de una función son una serie de valores (opcionales) que se pasan a la función, de modo que ciertas variables dentro de estas posean diferentes valores en cada llamada a la función.
+
+
+```{r}
+area_rectangulo <- function(lado1, lado2) 
+{
+  area <- lado1 * lado2
+  print(paste("el área es ", area))
+}
+
+area_rectangulo(2, 3)
+```
+
+Argumentos de valor
+
+
+```{r}
+
+area_rectangulo <- function(lado1, lado2) {
+  area <- lado1 * lado2
+  print(paste("el área es ", area))
+}
+
+area_rectangulo(lado1 = 2, lado2 = 3)
+
+
+```
+
+El argumento ...
+
+Este tiene la capacidad de capturar todos los valores pasados a la función que no coinciden con ningún argumento
+
+```{r}
+sumar_pares <- function(...)
+{
+  valores <- c(...)
+  if(!is.numeric(valores)) return('NaN')
+ 
+  contador <- 0
+  for(n in valores){
+    if(n%%2 == 0){
+      contador <- contador + n
+    }
+  }
+contador
+}
+
+sumar_pares(1:10)
+```
+
+
+Familia Apply
+
+lapply
+
+función que aplica una función a cada elemento de una lista o vector.
+
+```{r}
+
+#Estructura de la funcion lapply
+
+lapply(X,   # Lista o vector
+       FUN, # Función a ser aplicada
+       ...) # Argumentos adicionales para ser pasados a FUN
+
+```
+
+Ejemplo de funcion lapply
+
+```{r}
+#Creamos una lista con 2 elementos
+
+a <- list(A = c(8, 9, 7, 5))
+a
+
+#aplicamos la funcion sum a la lista para obtener la suma de cada uno de los elementos
+
+lapply(a, sum)
+
+```
+
+sapply
+
+Aplica una función a un vector o lista y devuelve un vector, una matriz o un array.
+
+```{r}
+#Estrcutura de la función sapply
+
+sapply(X,   # Vector o lista
+       FUN, # Función a ser aplicada
+       ..., # Argumentos adicionales para ser pasados a FUN
+       simplify = TRUE,  # Si FALSE devuelve una lista. Si "array" devuelve un array si es posible
+       USE.NAMES = TRUE) # Si TRUE y si X es un vector de caracteres, usa los nombres de X
+
+```
+
+
+Ejemplo de una función sapply
+
+
+```{r}
+#creamos una lista con 3 elementos
+
+Lista <- list(A=c(1,2,3,4,5), B=c(1,2,3,4,5,6), C=c(1))
+Lista
+
+#aplicamos la función sapply con la función lenght para contar los elementos en cada colección
+
+sapply(Lista,length)
+
+
+```
+
+
