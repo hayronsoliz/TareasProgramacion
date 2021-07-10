@@ -1,0 +1,208 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+0. Como leer archivos csv 
+
+0.1 Sintaxis
+
+Para leer archivos se utilizan 2 funciones: puede ser read.csv o read.csv2, la diferencia es el separador y delimitador de decimales.
+
+read.csv : utiliza separador "," - decimales "."
+read.csv2 : utiliza separador ";" - decimales ","
+
+READ.CSV
+
+# Por defecto coma (,) como separador y punto (.) como separador decimal
+read.csv(file,                 # Nombre del archivo o ruta completa del archivo
+         header = TRUE,        # Leer el encabezado (TRUE) o no (FALSE)
+         sep = ",",            # Separador de los valores
+         quote = "\"",         # Caracter de citaciones
+         dec = ".",            # Punto decimal
+         fill = TRUE,          # Rellenar celdas vacías (TRUE) o no (FALSE)
+         comment.char = "",    # Carácter de los comentarios o cadenas vacías
+         encoding = "unknown", # Codificación del archivo
+         ...)                  # Argumentos adicionales
+
+READ.CSV2
+
+# Por defecto punto y coma (;) como separador y coma (,) como separador decimal
+read.csv(file, header = TRUE, sep = ";", quote = "\"", dec = ",",
+          fill = TRUE, comment.char = "", encoding = "unknown", ...)
+          
+0.2 Leer archivo con argumentos por defecto y asignarlo a una variable
+
+
+```{r}
+
+mi_archivo <- read.csv("C:\\datos.csv")
+mi_archivo
+
+```
+
+0.3 Funcion Select
+
+Devuelve solo las columnas indicadas de und ataframe. Mediante select podemos indicar cuales columnas seleccionar, teniendo la posibilidad de hacerlo tanto mediante sus indices como mediante su nombres.
+
+0.4 Ejemplo de select
+
+```{r}
+
+library(dplyr)
+
+head( select(mtcars, 1, 3) )
+
+head( select(mtcars, mpg, disp) )
+
+```
+
+"-": selecciona todas las columnas menos las indicadas.
+
+```{r}
+
+head( select(mtcars, -c(mpg, disp)) )
+
+```
+
+":": selecciona un rango de columnas.
+
+```{r}
+
+head( select(mtcars, 1:3) ) #Tambien podríamos haber usado mpg:disp
+
+```
+
+starts_with: selecciona todas las columnas que comiencen con el patrón indicado.
+
+```{r}
+
+head( select(iris, starts_with("Petal")))
+
+```
+
+ends_with: selecciona todas las columnas que terminen con el patrón indicado.
+
+```{r}
+
+head( select(iris, ends_with("Width")))
+
+```
+
+contains: selecciona las columnas que posean el patrón indicado.
+
+```{r}
+
+head( select(iris, contains("etal")))
+
+```
+
+matches: similar a contains, pero permite poner una expresión regular.
+
+```{r}
+
+head( select(iris, matches(".t.")))
+
+```
+
+everything: completa con las columnas del data frame no pasadas como argumento. De esta forma se nos simplifican tareas de reordenar las columnas, poniendo primeras las que nos interesen destacar.
+
+```{r}
+
+head( select(iris, Species, everything()))
+
+```
+
+one_of: selecciona las variables pasadas en un vector.
+
+```{r}
+
+vars <- c("Petal.Length", "Petal.Width")
+
+head( select(iris, one_of(vars)))
+
+```
+
+------------------------------------------------------------------------
+
+Leer los datos del archivo csv y asignarlo a variable dataset_results.
+
+```{r}
+
+dataset_results <- read.csv("C:\\primary_results.csv")
+
+dataset_results
+
+```
+
+1. Filtrar todos los votos del estado de Florida.
+
+```{r}
+
+library(gapminder)
+library(dplyr)
+
+FiltroFlorida <- dataset_results %>% 
+  filter (state=='Florida')
+
+```
+
+
+2. Utilice operadores lógicos (& and |), según corresponda:
+
+2.1. Filtrar votos para los candidatos Hillary Clinton o Donald Trump
+
+```{r}
+
+Filtro_Hillary_Donald <- dataset_results %>% 
+  filter (candidate=='Hillary Clinton' | candidate=='Donald Trump' )
+
+```
+
+2.2 Filtrar votos para el partido Demócrata y el condado Shelby
+
+```{r}
+
+Filtro_Democrata_Condado <- dataset_results %>% 
+  filter (party=='Democrat' & county=='Shelby')
+
+```
+
+2.3 Filtrar votos para el estado de Alabama y que la cantidad de votos sea mayor a 15000.
+
+
+```{r}
+
+Filtro_Alabama_Votos <- dataset_results %>% 
+  filter (state=='Alabama' & votes>=15000)
+
+```
+
+3, Utilice la función select y arrange para el siguiente filtrado:
+
+3.1 filtrar votos para el estado de Texas y el condado Denton, seleccionando únicamente las columnas party, candidate, votes, luego ordene de forma descendente por al columna votes.
+
+```{r}
+
+Filtro_Votos_Texas_Denton <- dataset_results %>% 
+  filter (state=='Texas' & county=='Denton') %>% 
+  select (party, candidate, votes) %>% 
+  arrange(desc(votes))
+
+```
+
+4. Utilice el verbo mutate y arrange para el siguiente filtrado:
+
+4.1. Filtrar por el partido Republicano, que el candidato sea Ted Cruz en el estado de Alaska, luego agregue una columna que se llame vote_count que sea la división de votes por fraction_votes (votes/fraction_votes), finalmente ordene de forma descendente por vote_count. 
+
+```{r}
+
+Filtro_Votos_republicano <- dataset_results %>% 
+  filter (party=='Republican' & candidate=='Ted Cruz' & state=='Alaska') %>% 
+  mutate(vote_count = votes/fraction_votes) %>%
+  arrange(desc(vote_count))
+
+```
+
+
+
